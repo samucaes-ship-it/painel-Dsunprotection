@@ -1,0 +1,12 @@
+{
+ "days": {
+  "2026-10-26": {
+   "PageView": 21,
+   "ViewContent": 9,
+   "InitiateCheckout": 10,
+   "AddToCart": 7,
+   "Purchase": 1
+  }
+ },
+ "updated_at": "2026-10-26T20:50:53+00:00"
+}
