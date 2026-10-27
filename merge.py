@@ -17,9 +17,9 @@ for s in stats.get("stats", []):
     for e in s.get("data", []):
         day[e["value"]] = day.get(e["value"], 0) + int(e["count"])
 start = datetime.strptime(stats["start_time"], "%Y-%m-%dT%H:%M:%S%z").astimezone(TZ)
-first_full = start.strftime("%Y-%m-%d") if start.hour == 0 else None
+partial_day = None if start.hour == 0 else start.strftime("%Y-%m-%d")
 for d, v in fresh.items():
-    if d == min(fresh) and first_full is None and d in data["days"]:
+    if d == partial_day and d in data["days"]:
         continue  # partial first day of the window: keep the stored total
     data["days"][d] = v
 data["days"] = dict(sorted(data["days"].items()))
