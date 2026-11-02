@@ -119,7 +119,7 @@ td.dim { color: var(--muted); }
     <div class="tbl" id="table"><p class="empty">Aguardando dados.</p></div>
   </section>
 
-  <p class="foot">Fonte: Pixel D Sun (eventos do navegador). Visitas são páginas vistas (PageView), não pessoas únicas. Dias contados no horário de Brasília.</p>
+  <p class="foot">Fontes: Pixel D Sun para visitas, produto, carrinho e checkout; pedidos aprovados da loja desde 01/11/2026 para compras. Visitas são páginas vistas (PageView), não pessoas únicas. Dias contados no horário de Brasília.</p>
 </div>
 
 <script>
@@ -139,7 +139,7 @@ td.dim { color: var(--muted); }
     { ev: "Purchase", lbl: "Compras", color: "var(--petal)", axis: "right" }
   ];
 
-  let days = 7, data = null;
+  let days = 7, data = null, sales = null, salesError = false;
   try { const d = parseInt(localStorage.getItem("dsun-days"), 10); if ([7, 14, 30].includes(d)) days = d; } catch (e) {}
   const $ = (id) => document.getElementById(id);
   const fmt = new Intl.NumberFormat("pt-BR");
@@ -222,7 +222,7 @@ td.dim { color: var(--muted); }
     for (let i = days - 1; i >= 0; i--) {
       const dt = new Date(now - i * 86400000);
       const k = dayKey.format(dt);
-      list.push(Object.assign({ key: k, date: dt }, data.days[k] || {}));
+      list.push(Object.assign({ key: k, date: dt }, data.days[k] || {}, { Purchase: sales ? (sales.days[k] || 0) : 0 }));
     }
     const totals = {};
     for (const d of list) for (const s of STEPS) totals[s.ev] = (totals[s.ev] || 0) + (d[s.ev] || 0);
@@ -233,9 +233,10 @@ td.dim { color: var(--muted); }
     if (!data) return;
     const { list, totals } = build();
     renderFunnel(totals); renderChart(list); renderTable(list);
-    $("fresh").textContent = "Atualizado " + timeLbl.format(new Date(data.updated_at));
+    $("fresh").textContent = "Visitas: " + timeLbl.format(new Date(data.updated_at)) + (sales ? " · Vendas: " + timeLbl.format(new Date(sales.updated_at)) : " · Vendas indisponíveis");
+    if (salesError) { notice("<b>Não foi possível atualizar as compras.</b> " + (sales ? "Exibindo a última consulta de pagamentos aprovados." : "Recarregue a página em instantes.")); return; }
     if ((totals.InitiateCheckout || 0) > 0 && !(totals.Purchase > 0)) {
-      notice("<b>Nenhuma compra registrada no período.</b> Houve checkouts iniciados, mas o site não enviou o evento de compra. Se houve vendas, o evento de compra precisa ser instalado na página de pedido concluído.");
+      notice("<b>Nenhuma compra registrada no período.</b> Não há pagamentos aprovados desde 01/11 neste período. Pix e boletos pendentes não contam como compra.");
     } else notice("");
   }
 
@@ -245,8 +246,20 @@ td.dim { color: var(--muted); }
     draw();
   }));
   setPressed();
+  async function refreshSales() {
+    try {
+      const r = await fetch("https://dsunprotection.com.br/api/sales-summary.php", { cache: "no-store", credentials: "omit", signal: AbortSignal.timeout(15000) });
+      if (!r.ok) throw new Error(r.status);
+      const j = await r.json();
+      if (j.source !== "approved_store_orders" || j.since !== "2026-11-01" || !j.days || !Number.isFinite(Date.parse(j.updated_at)) || Object.entries(j.days).some(([k,v]) => !/^\d{4}-\d{2}-\d{2}$/.test(k) || !Number.isInteger(v) || v < 0)) throw new Error("Dados inválidos");
+      sales = j; salesError = false;
+    } catch (e) { salesError = true; }
+    draw();
+  }
   fetch("data.json", { cache: "no-store" }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(j => { data = j; draw(); })
+    .then(async j => { data = j; await refreshSales(); })
     .catch(() => { $("fresh").textContent = "Sem dados"; notice("<b>Não foi possível carregar os números.</b> Recarregue a página em instantes."); });
+  setInterval(() => { if (data && !document.hidden) refreshSales(); }, 60000);
+  document.addEventListener("visibilitychange", () => { if (data && !document.hidden) refreshSales(); });
 })();
 </script>
