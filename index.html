@@ -52,8 +52,8 @@ h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 4vw, 
 .step .rate { font: 12px var(--mono); color: var(--muted); }
 .step .bar { height: 6px; border-radius: 3px; background: var(--leaf-soft); overflow: hidden; margin-top: 6px; }
 .step .bar i { display: block; height: 100%; background: var(--leaf); }
-.step.key .num { color: var(--petal); }
-.step.key .bar i { background: var(--petal); }
+.step.key .num { color: var(--leaf); }
+.step.key .bar i { background: var(--leaf); }
 .step.zero .num { color: var(--muted); }
 
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 12px; min-width: 0; }
@@ -136,7 +136,7 @@ td.dim { color: var(--muted); }
   const SERIES = [
     { ev: "PageView", lbl: "Visitas", color: "var(--leaf)", axis: "left" },
     { ev: "AddToCart", lbl: "Carrinho", color: "var(--warn)", axis: "right" },
-    { ev: "Purchase", lbl: "Compras", color: "var(--petal)", axis: "right" }
+    { ev: "Purchase", lbl: "Compras", color: "var(--leaf)", axis: "right" }
   ];
 
   let days = 7, data = null, sales = null, salesError = false;
