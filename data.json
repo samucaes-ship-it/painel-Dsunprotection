@@ -91,9 +91,11 @@
    "Purchase": 3
   },
   "2026-11-09": {
-   "PageView": 3,
-   "ViewContent": 3
+   "PageView": 25,
+   "ViewContent": 20,
+   "AddToCart": 4,
+   "InitiateCheckout": 5
   }
  },
- "updated_at": "2026-11-09T10:33:52+00:00"
+ "updated_at": "2026-11-09T15:34:22+00:00"
 }
