@@ -171,7 +171,14 @@
    "AddToCart": 28,
    "InitiateCheckout": 26,
    "Purchase": 2
+  },
+  "2026-11-21": {
+   "PageView": 24,
+   "ViewContent": 16,
+   "AddToCart": 7,
+   "InitiateCheckout": 4,
+   "Purchase": 1
   }
  },
- "updated_at": "2026-11-21T10:34:02+00:00"
+ "updated_at": "2026-11-21T15:34:18+00:00"
 }
