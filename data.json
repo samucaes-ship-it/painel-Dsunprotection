@@ -208,12 +208,16 @@
    "Purchase": 1
   },
   "2026-11-26": {
-   "PageView": 51,
-   "ViewContent": 34,
-   "AddToCart": 17,
-   "InitiateCheckout": 12,
+   "PageView": 63,
+   "ViewContent": 43,
+   "AddToCart": 27,
+   "InitiateCheckout": 14,
    "Purchase": 4
+  },
+  "2026-11-27": {
+   "PageView": 1,
+   "ViewContent": 1
   }
  },
- "updated_at": "2026-11-26T21:33:56+00:00"
+ "updated_at": "2026-11-27T10:34:34+00:00"
 }
